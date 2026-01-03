@@ -24,11 +24,11 @@ TABLE_BOUNDARIES = [40, 66, 98]
 FORCED_SEATS = {
     "Drew Habel": 40,
     "Katie Habel": 41,
-    "Ali de Jong": 44,
-    "Matt Habel": 45,
+    "Ali de Jong": 45,
+    "Matt Habel": 46,
     "Joe Habel": 42,
     "Olivia Frymark": 43,
-    "Annabel Wang": 46,
+    "Annabel Wang": 44,
 }
 
 
@@ -91,7 +91,7 @@ SPECIAL_COUPLES = [
     ("Helen Clark", "Adam Collins"),
     ("Sean Kirmao", "Charlotte O'Keefe Stralka"),
     ("Ari Tooch", "Gabe Diamond"),
-    ("Dylan Short", "Shannon Barry (Short)"),
+    ("Dillon Short", "Shannon Barry (Short)"),
     ("Lilly Elam", "Holly SanMiguel"),
     ("Hunter Stephan", "Jenna Stephan"),
     ("Nick Singley", "Monica Raysberg"),
@@ -101,20 +101,20 @@ SPECIAL_COUPLES = [
 
 AFFINITY_SCORES = {
     ("acf", "af"): 80,
-    ("af", "aff"): 50,
+    ("acf", "aff"): 80,
     ("mcf", "dan"): 80,
-    ("mff", "mcf"): 80,
-    ("acf", "mcf"): 100,
+    ("mff", "mcf"): 100,
+    ("acf", "mcf"): 50,
     ("malays", "mcf"): 80,
-    ("malays", "dan"): 20,
-    ("cf", "sff"): 100,
+    ("malays", "dan"): 40,
+    ("cf", "sff"): 125,
     ("cornell", "mhs"): 40,
     ("ut", "ahs"): 60,
     ("cornell", "ut"): 50,
     ("sff", "cornell"): 50,
     ("sff", "ut"): 50,
-    ("mhs", "sff"): 30,
-    ("ahs", "sff"): 30,
+    ("mhs", "sff"): 50,
+    ("ahs", "sff"): 50,
 }
 AFFINITY_MAP = {tuple(sorted(k)): v for k, v in AFFINITY_SCORES.items()}
 
