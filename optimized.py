@@ -24,14 +24,20 @@ TABLE_BOUNDARIES = [40, 66, 98]
 
 # --- FORCED SEATING ---
 FORCED_SEATS = {
-    "Drew Habel": 40,
-    "Katie Habel": 41,
+    #    "Drew Habel": 40,
+    #    "Katie Habel": 41,
     "Ali de Jong": 44,
     "Matt Habel": 45,
-    "Joe Habel": 42,
-    "Olivia Frymark": 43,
-    #    "Annabel Wang": 47,
+    #    "Joe Habel": 42,
+    #    "Olivia Frymark": 43,
+    #    "Annabel Wang": 46,
     #    "Phyllis Luedke": 46,
+    #    "Helen Clark": 47,
+    #    "Adam Collins": 48,
+    # "Lori de Jong": 66,
+    # "Mark McNeill": 67,
+    # "Mary Kay Habel": 0,
+    # "Rich Habel": 1,
 }
 
 
@@ -76,11 +82,14 @@ AFFINITY_SCORES = {
     ("acf", "af"): 120,
     ("acf", "aff"): 100,
     ("mcf", "dan"): 100,
-    ("mff", "mcf"): 125,
-    ("acf", "mcf"): 25,
-    ("malays", "mcf"): 80,
-    ("malays", "dan"): 25,
+    ("mff", "mcf"): 75,
+    ("mff", "dan"): 75,
+    ("acf", "mcf"): 100,
+    ("malays", "mcf"): 40,
+    ("malays", "dan"): 50,
     ("cf", "sff"): 125,
+    ("cf", "ut"): 40,
+    ("cf", "cornell"): 40,
     ("cornell", "mhs"): 40,
     ("ut", "ahs"): 60,
     ("cornell", "ut"): 50,
@@ -99,15 +108,15 @@ COHORTS = {
 }
 
 COHORT_AFFINITY = {
-    ("family", "young_friends"): -400,
-    ("family_friends", "young_friends"): -400,
+    ("family", "young_friends"): -500,
+    ("family_friends", "young_friends"): -700,
     ("hs", "family"): -200,
-    ("hs", "young_friends"): 50,
+    ("hs", "young_friends"): 100,
 }
 COHORT_AFFINITY_MAP = {tuple(sorted(k)): v for k, v in COHORT_AFFINITY.items()}
 GROUP_TO_COHORT = {g: c for c, gs in COHORTS.items() for g in gs}
 
-BLOCK_BONUS = 1500
+BLOCK_BONUS = 3000
 SAME_GROUP_BONUS = 300
 FRAGMENTATION_PENALTY = 900
 
@@ -204,10 +213,11 @@ def get_rsvp_info(name, joy_df):
     if score > 75:
         return {
             "rsvp": joy_df.loc[index, "rsvp"],
+            "meal": joy_df.loc[index, "meal / wedding"],
             "j_idx": index,
             "last_name": str(joy_df.loc[index, "last name"]).strip().lower(),
         }
-    return {"rsvp": "No Match", "j_idx": None, "last_name": ""}
+    return {"rsvp": "No Match", "j_idx": None, "last_name": "", "meal": None}
 
 
 def generate_attendance_list():
@@ -221,6 +231,7 @@ def generate_attendance_list():
     rsvp_data = base_df["guest"].apply(lambda x: get_rsvp_info(x, joy_df))
     base_df["rsvp"] = rsvp_data.apply(lambda x: x["rsvp"])
     base_df["j_idx"] = rsvp_data.apply(lambda x: x["j_idx"])
+    base_df["meal"] = rsvp_data.apply(lambda x: x["meal"])
     base_df["last_name"] = rsvp_data.apply(lambda x: x["last_name"])
     attending = base_df[base_df["rsvp"] == "Will Attend"].copy().reset_index(drop=True)
     attending["block_id"] = None
@@ -237,7 +248,7 @@ def generate_attendance_list():
         ("Helen Clark", "Adam Collins"),
         ("Sean Kirmani", "Charlotte O'Keefe Stralka"),
         ("Ari Tooch", "Gabe Diamond"),
-        ("Dillon Short", "Shannon Barry (Short)"),
+        ("Dillon Short", "Shannon Short"),
         ("Lilly Elam", "Holly SanMiguel"),
         ("Hunter Stephan", "Jenna Stephan"),
         ("Nick Singley", "Monica Raysberg"),
@@ -288,7 +299,7 @@ def generate_attendance_list():
     return attending
 
 
-def simulated_annealing(guests, affinity_cache, iterations=4, patience=50000):
+def simulated_annealing(guests, affinity_cache, iterations=2500000, patience=75000):
     n = len(guests)
     sequence = [None] * n
     remaining_guests = []
@@ -303,7 +314,6 @@ def simulated_annealing(guests, affinity_cache, iterations=4, patience=50000):
         else:
             remaining_guests.append(g)
 
-    random.shuffle(remaining_guests)
     for i in range(n):
         if sequence[i] is None:
             sequence[i] = remaining_guests.pop()
@@ -485,7 +495,7 @@ def main():
             "groups",
             "block_id",
             "is_forced",
-            "meal \/ wedding",
+            "meal",
         ]
     ]
     res.to_csv("final_seating_chart_optimized.csv", index=False)
